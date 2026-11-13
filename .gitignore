@@ -9,7 +9,7 @@ venv/
 .env.*
 
 # 실행할 때마다 자동 생성되는 파일 (루트에 생기는 것만 제외, results/ 의 보관본은 커밋)
-/intersection.rou.xml
+/sumo/intersection.rou.xml
 /tripinfo_*.xml
 /comparison.png
 

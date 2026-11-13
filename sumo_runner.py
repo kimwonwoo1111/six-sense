@@ -18,9 +18,9 @@ state 문자열(길이 = 제어 링크 수)은 손으로 쓰지 않고, 실제 �
 
 [실행 준비]
   1) SUMO 설치 + SUMO_HOME 환경변수 등록 (traci 모듈을 SUMO_HOME/tools 에서 불러온다)
-  2) 교차로 네트워크(intersection.net.xml)는 cross.nod.xml / cross.edg.xml 로 미리 생성해 둔 것을 쓴다.
-     차량 수요(intersection.rou.xml)는 실행할 때 generate_vehicle_routes()가 자동 생성한다.
-  3) python sumo_runner.py
+  2) 교차로 네트워크(sumo/intersection.net.xml)는 cross.nod.xml / cross.edg.xml 로 미리 생성해 둔 것을 쓴다.
+     차량 수요(sumo/intersection.rou.xml)는 실행할 때 generate_vehicle_routes()가 자동 생성한다.
+  3) 저장소 루트에서 python sumo_runner.py
 """
 
 import os
@@ -48,16 +48,17 @@ from signal_allocation import (  # noqa: E402
 # CONFIG
 # ============================================================
 
-SUMOCFG = "intersection.sumocfg"
+# SUMO 입력 파일은 sumo/ 폴더에 둔다. (경로는 저장소 루트에서 실행하는 기준)
+SUMOCFG = "sumo/intersection.sumocfg"
 USE_GUI = True     # True면 sumo-gui(화면), False면 sumo(콘솔)
 GUI_DELAY_MS = 0   # sumo-gui 스텝 간 딜레이(ms). 0이면 딜레이 없이 최대 속도로 재생.
-GUI_SETTINGS_FILE = "gui-settings.xml"  # 차량=박스, 보행자=원(크기3) 시각화 설정
+GUI_SETTINGS_FILE = "sumo/gui-settings.xml"  # 차량=박스, 보행자=원(크기3) 시각화 설정
 
 # 실행할 때마다 signal_allocation.py 의 SCENARIO_SCHEDULE(시간대별 등급)를 읽어
 # SUMO 차량 수요(intersection.rou.xml)를 자동 재생성한다.
 # -> 알고리즘 파일의 SCENARIO_SCHEDULE만 바꾸면 SUMO에도 바로 반영됨.
 REGENERATE_ROUTES = True
-ROUTE_FILE = "intersection.rou.xml"
+ROUTE_FILE = "sumo/intersection.rou.xml"
 SIM_DURATION = 7200   # 수요 생성 시간(초). sumocfg의 end 와 맞춤. (2시간)
 ROUTE_SEED = 42       # 등급 범위 안에서 실제 도착률을 뽑는 시드(재현용)
 

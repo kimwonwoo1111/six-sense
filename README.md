@@ -35,7 +35,7 @@
 | 신호 배분 알고리즘 | 보행 고정 → 최소 시간 보장 → 수요 비례 배분 → 최대 시간 제한, 3사이클 롤링 윈도우 | [`signal_allocation.py`](signal_allocation.py) |
 | SUMO·TraCI 연동 | 5현시 신호 프로그램 자동 생성, 150m 점유율 측정, 블록마다 재배분 | [`sumo_runner.py`](sumo_runner.py) |
 | 성능 검증 | 고정식·적응형 동시 실행, 처리량·timeLoss·워밍업 제외 지표, 비교 그래프 | [`compare_runner.py`](compare_runner.py) |
-| 시험용 교차로 | 4방향 3차로 교차로 네트워크 직접 정의 | [`cross.nod.xml`](cross.nod.xml), [`cross.edg.xml`](cross.edg.xml) |
+| 시험용 교차로 | 4방향 3차로 교차로 네트워크 직접 정의 | [`sumo/cross.nod.xml`](sumo/cross.nod.xml), [`sumo/cross.edg.xml`](sumo/cross.edg.xml) |
 | 관제 대시보드 | 화면 흐름과 UI/UX 설계 ([아래](#관제-대시보드-uiux-설계) 참고, 코드는 이 저장소에 없음) | — |
 
 ## 알고리즘
@@ -57,13 +57,13 @@
 
 수요가 전혀 없으면 기준값(60초)으로 돌아갑니다. 이 함수는 수요의 **비율만** 쓰기 때문에, 입력 단위가 차량 대수(파이썬 시뮬레이션)든 점유율 %(SUMO)든 같은 코드를 그대로 씁니다.
 
-### 수요 측정 — [`occupancy_150m()`](sumo_runner.py#L274)
+### 수요 측정 — [`occupancy_150m()`](sumo_runner.py#L275)
 
 - **무엇을**: 정지선에서 뒤로 150m 구간 안에 있는 차량 길이의 합 ÷ 구간 길이(차로 평균)를 점유율(%)로 씁니다.
 - **언제**: 각 방향이 자기 녹색이 아닌 동안 10초마다 점유율을 재고, 녹색이 켜지는 순간 그 샘플들의 평균을 그 사이클 값으로 확정합니다. 블록이 끝나면 3사이클 값을 다시 평균 냅니다(이중 평균).
 - SUMO에서는 카메라 대신 시뮬레이터에서 점유율을 직접 읽습니다. 실제 시스템에서는 이 자리에 AI 비전의 감지 결과가 들어가는 구조입니다.
 
-### SUMO 신호 프로그램 자동 생성 — [`build_program()`](sumo_runner.py#L220)
+### SUMO 신호 프로그램 자동 생성 — [`build_program()`](sumo_runner.py#L221)
 
 SUMO가 기본으로 만드는 신호는 5현시 설계와 달라서, TraCI `setProgramLogic`으로 9단계(4방향 × 녹색·황색 + 보행) 프로그램을 직접 만들어 설치합니다.
 
@@ -87,15 +87,17 @@ python sumo_runner.py
 python compare_runner.py
 ```
 
-- 차량 수요 파일(`intersection.rou.xml`)은 2)·3)을 실행할 때 [`SCENARIO_SCHEDULE`](signal_allocation.py)로부터 자동 생성됩니다. 시나리오를 바꾸려면 이 값만 고치면 파이썬 시뮬레이션과 SUMO에 함께 반영됩니다.
+- 모든 명령은 저장소 루트에서 실행합니다. SUMO 입력 파일 경로가 루트 기준(`sumo/...`)으로 지정되어 있습니다.
+- 차량 수요 파일(`sumo/intersection.rou.xml`)은 2)·3)을 실행할 때 [`SCENARIO_SCHEDULE`](signal_allocation.py)로부터 자동 생성됩니다. 시나리오를 바꾸려면 이 값만 고치면 파이썬 시뮬레이션과 SUMO에 함께 반영됩니다.
 - 1)의 파이썬 시뮬레이션은 차량 대수 기반의 단순 대기열 모델이라, 정식 성능 수치가 아니라 배분 로직이 올바른 방향으로 동작하는지 점검하는 용도로 썼습니다.
 
 <details>
 <summary>교차로·보행자 파일을 다시 만들 때 (선택)</summary>
 
-저장소에 포함된 `intersection.net.xml`, `intersection.ped.rou.xml`은 아래 명령으로 생성했습니다(파일 헤더에 기록된 옵션 기준).
+저장소에 포함된 `sumo/intersection.net.xml`, `sumo/intersection.ped.rou.xml`은 아래 명령으로 생성했습니다(파일 헤더에 기록된 옵션 기준).
 
 ```bash
+cd sumo
 netconvert --node-files cross.nod.xml --edge-files cross.edg.xml \
   --no-turnarounds --sidewalks.guess --crossings.guess --walkingareas \
   -o intersection.net.xml
@@ -112,11 +114,12 @@ six-sense/
 ├── signal_allocation.py      # 배분 알고리즘 + 파이썬 간이 시뮬레이션 + 시나리오 정의
 ├── sumo_runner.py            # SUMO 연동: 신호 프로그램 생성, 점유율 측정, 블록마다 재배분
 ├── compare_runner.py         # 고정식/적응형 SUMO 2개 동시 실행, 지표 집계, 그래프 저장
-├── intersection.sumocfg      # SUMO 실행 설정 (2시간)
-├── cross.nod.xml / cross.edg.xml   # 4방향 3차로 교차로 정의
-├── intersection.net.xml      # 위 정의로 생성한 SUMO 네트워크
-├── intersection.ped.rou.xml  # 보행자 수요
-├── gui-settings.xml          # sumo-gui 표시 설정
+├── sumo/                     # SUMO 입력 파일
+│   ├── intersection.sumocfg      # SUMO 실행 설정 (2시간)
+│   ├── cross.nod.xml / cross.edg.xml   # 4방향 3차로 교차로 정의
+│   ├── intersection.net.xml      # 위 정의로 생성한 SUMO 네트워크
+│   ├── intersection.ped.rou.xml  # 보행자 수요
+│   └── gui-settings.xml          # sumo-gui 표시 설정
 ├── results/                  # README 수치의 근거 (비교 그래프, tripinfo)
 └── docs/
     ├── DEVELOPMENT.md        # 개발 과정: 부딪힌 문제와 해결 과정
