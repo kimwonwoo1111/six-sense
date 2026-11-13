@@ -1,0 +1,3 @@
+# compare_runner.py 의 비교 그래프(results/comparison.png) 생성용
+matplotlib
+# traci 는 pip 대신 SUMO 설치 폴더(SUMO_HOME/tools)에서 불러온다. (검증 당시 SUMO 1.27.1)

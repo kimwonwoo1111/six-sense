@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SUMO 실행 설정 파일.
+     net: cross.nod.xml + cross.edg.xml 을 netconvert 로 변환한 4방향 교차로
+     rou: intersection.rou.xml (차량, sumo_runner 실행 시 자동 생성)
+          intersection.ped.rou.xml (보행자, SUMO randomTrips.py 로 생성) -->
+<configuration>
+    <input>
+        <net-file value="intersection.net.xml"/>
+        <route-files value="intersection.rou.xml,intersection.ped.rou.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="7200"/>   <!-- 2시간 시뮬레이션 -->
+    </time>
+    <processing>
+        <time-to-teleport value="-1"/>  <!-- 정체 시 차량 순간이동 비활성화 (현실적) -->
+    </processing>
+</configuration>

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 환경 변수·비밀 정보
+.env
+.env.*
+
+# 실행할 때마다 자동 생성되는 파일 (루트에 생기는 것만 제외, results/ 의 보관본은 커밋)
+/intersection.rou.xml
+/tripinfo_*.xml
+/comparison.png
+
+# 발표 자료·보고서 원본, 대용량 미디어
+*.pptx
+*.docx
+*.gif
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

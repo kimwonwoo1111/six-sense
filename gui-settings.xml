@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SUMO-GUI 시각화 설정.
+     차량: 박스(boxes)로 표시 (vehicleQuality=1)
+     보행자: 원(circle)으로 표시 + 크기 3배 (personQuality=1, person_exaggeration=3)
+     sumo-gui 실행 시 gui-settings-file 옵션으로 적용된다. -->
+<viewsettings>
+    <scheme name="custom">
+        <vehicles vehicleQuality="1"/>
+        <persons personQuality="1" person_exaggeration="3.00" person_minSize="3.00"/>
+    </scheme>
+</viewsettings>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 깔끔한 4방향 교차로 노드 정의.
+     중앙(C)에 신호등, 네 방향(N/E/S/W) 끝점. -->
+<nodes>
+    <node id="C" x="0"    y="0"    type="traffic_light"/>
+    <node id="N" x="0"    y="200"  type="priority"/>
+    <node id="E" x="200"  y="0"    type="priority"/>
+    <node id="S" x="0"    y="-200" type="priority"/>
+    <node id="W" x="-200" y="0"    type="priority"/>
+</nodes>
